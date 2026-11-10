@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BiblioAbierta: consulta el catálogo, reserva salas de estudio y solicita préstamos de la biblioteca desde cualquier dispositivo.">
+  <title>BiblioAbierta: biblioteca virtual</title>
+
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Source+Serif+4:opsz,wght@8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header">
+    <div class="contenedor barra">
+      <a class="marca" href="#inicio">BiblioAbierta</a>
+
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-principal">
+        <span class="menu-icono" aria-hidden="true"></span>
+        <span>Menú</span>
+      </button>
+
+      <nav id="menu-principal" class="menu" aria-label="Principal">
+        <ul>
+          <li><a href="#catalogo">Catálogo</a></li>
+          <li><a href="#espacios">Espacios</a></li>
+          <li><a href="#reservas">Reservas</a></li>
+          <li><a href="#horarios">Horarios</a></li>
+          <li><a href="#preguntas">Preguntas</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+
+    <!-- Presentación -->
+    <section id="inicio" class="hero" aria-labelledby="titulo-inicio">
+      <div class="contenedor hero-grid">
+        <div class="hero-texto">
+          <h1 id="titulo-inicio">Encuentra tu próxima lectura y reserva tu espacio de estudio</h1>
+          <p class="lead">BiblioAbierta reúne el catálogo, las salas y los préstamos de la biblioteca en un solo lugar, para que no pierdas tiempo haciendo fila en el mostrador.</p>
+          <div class="acciones">
+            <a class="boton boton-primario" href="#catalogo">Buscar un libro</a>
+            <a class="boton boton-secundario" href="#reservas">Reservar una sala</a>
+          </div>
+        </div>
+        <figure class="hero-figura">
+          <img src="img/hero-estanteria.svg" alt="Ilustración de una estantería con libros de distintos colores" width="560" height="420">
+        </figure>
+      </div>
+    </section>
+
+    <!-- Estado en tiempo real: se actualiza con JavaScript según la hora local -->
+    <section class="estado" aria-labelledby="titulo-estado">
+      <div class="contenedor estado-caja">
+        <h2 id="titulo-estado" class="sr-only">Estado de la biblioteca</h2>
+        <p class="estado-indicador" id="estado-indicador">
+          <span class="punto" aria-hidden="true"></span>
+          <span id="estado-texto">Revisando el horario…</span>
+        </p>
+        <p class="estado-detalle" id="estado-detalle"></p>
+      </div>
+    </section>
+
+    <!-- Catálogo con búsqueda y filtro -->
+    <section id="catalogo" class="seccion" aria-labelledby="titulo-catalogo">
+      <div class="contenedor">
+        <header class="encabezado-seccion">
+          <h2 id="titulo-catalogo">Catálogo</h2>
+          <p>Busca por título, autor o tema. Si un libro está disponible, puedes pedirlo en préstamo desde su ficha.</p>
+        </header>
+
+        <form class="filtros" id="form-filtros" role="search">
+          <div class="campo">
+            <label for="buscar">Buscar en el catálogo</label>
+            <input type="search" id="buscar" name="buscar" placeholder="Título, autor o tema" autocomplete="off">
+          </div>
+          <div class="campo">
+            <label for="categoria">Categoría</label>
+            <select id="categoria" name="categoria">
+              <option value="todas">Todas</option>
+              <option value="Tecnología">Tecnología</option>
+              <option value="Diseño">Diseño</option>
+              <option value="Matemáticas">Matemáticas</option>
+              <option value="Literatura">Literatura</option>
+              <option value="Historia">Historia</option>
+            </select>
+          </div>
+        </form>
+
+        <p class="resultados" id="resultados" aria-live="polite"></p>
+
+        <ul class="libros" id="lista-libros">
+          <li class="libro" data-categoria="Tecnología" data-busqueda="introducción a la programación web tecnología">
+            <img src="img/libro-programacion.svg" alt="" width="96" height="132" loading="lazy">
+            <div class="libro-info">
+              <h3>Introducción a la programación web</h3>
+              <p class="autor">Autora: Marta Quintero</p>
+              <p class="meta">Tecnología, 3 ejemplares</p>
+              <span class="disponibilidad disponible">Disponible</span>
+              <div>
+                <button type="button" class="boton boton-pequeno boton-primario" data-libro="Introducción a la programación web">Pedir en préstamo</button>
+              </div>
+            </div>
+          </li>
+
+          <li class="libro" data-categoria="Diseño" data-busqueda="diseño de interfaces diseño">
+            <img src="img/libro-disenio.svg" alt="" width="96" height="132" loading="lazy">
+            <div class="libro-info">
+              <h3>Diseño de interfaces</h3>
+              <p class="autor">Autor: Luis Ortega</p>
+              <p class="meta">Diseño, 2 ejemplares</p>
+              <span class="disponibilidad prestado">Prestado</span>
+              <div>
+                <button type="button" class="boton boton-pequeno" disabled>No disponible por ahora</button>
+              </div>
+            </div>
+          </li>
+
+          <li class="libro" data-categoria="Matemáticas" data-busqueda="estadística básica matemáticas">
+            <img src="img/libro-estadistica.svg" alt="" width="96" height="132" loading="lazy">
+            <div class="libro-info">
+              <h3>Estadística básica</h3>
+              <p class="autor">Autor: Rafael Salazar</p>
+              <p class="meta">Matemáticas, 4 ejemplares</p>
+              <span class="disponibilidad disponible">Disponible</span>
+              <div>
+                <button type="button" class="boton boton-pequeno boton-primario" data-libro="Estadística básica">Pedir en préstamo</button>
+              </div>
+            </div>
+          </li>
+
+          <li class="libro" data-categoria="Literatura" data-busqueda="don quijote de la mancha cervantes literatura">
+            <img src="img/libro-quijote.svg" alt="" width="96" height="132" loading="lazy">
+            <div class="libro-info">
+              <h3>Don Quijote de la Mancha</h3>
+              <p class="autor">Autor: Miguel de Cervantes</p>
+              <p class="meta">Literatura, 2 ejemplares</p>
+              <span class="disponibilidad disponible">Disponible</span>
+              <div>
+                <button type="button" class="boton boton-pequeno boton-primario" data-libro="Don Quijote de la Mancha">Pedir en préstamo</button>
+              </div>
+            </div>
+          </li>
+
+          <li class="libro" data-categoria="Literatura" data-busqueda="cien años de soledad garcía márquez literatura">
+            <img src="img/libro-cien-anios.svg" alt="" width="96" height="132" loading="lazy">
+            <div class="libro-info">
+              <h3>Cien años de soledad</h3>
+              <p class="autor">Autor: Gabriel García Márquez</p>
+              <p class="meta">Literatura, 3 ejemplares</p>
+              <span class="disponibilidad prestado">Prestado</span>
+              <div>
+                <button type="button" class="boton boton-pequeno" disabled>No disponible por ahora</button>
+              </div>
+            </div>
+          </li>
+
+          <li class="libro" data-categoria="Historia" data-busqueda="historia universal historia">
+            <img src="img/libro-historia.svg" alt="" width="96" height="132" loading="lazy">
+            <div class="libro-info">
+              <h3>Historia universal</h3>
+              <p class="autor">Autor: Carla Bermúdez</p>
+              <p class="meta">Historia, 2 ejemplares</p>
+              <span class="disponibilidad disponible">Disponible</span>
+              <div>
+                <button type="button" class="boton boton-pequeno boton-primario" data-libro="Historia universal">Pedir en préstamo</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+
+        <p class="vacio" id="sin-resultados" hidden>No encontramos libros con esos criterios. Prueba con otra palabra o cambia la categoría.</p>
+      </div>
+    </section>
+
+    <!-- Espacios de estudio -->
+    <section id="espacios" class="seccion seccion-fondo" aria-labelledby="titulo-espacios">
+      <div class="contenedor">
+        <header class="encabezado-seccion">
+          <h2 id="titulo-espacios">Espacios de estudio</h2>
+          <p>Tres tipos de sala para estudiar solo, trabajar en equipo o programar. Todas están abiertas durante el horario de atención.</p>
+        </header>
+
+        <ul class="espacios">
+          <li class="espacio">
+            <img src="img/espacio-individual.svg" alt="Escritorio junto a una ventana, con silla y lámpara" width="480" height="300" loading="lazy">
+            <div class="espacio-texto">
+              <h3>Sala individual</h3>
+              <p>Cabina silenciosa con escritorio, toma de corriente y luz natural, pensada para leer y escribir sin distracciones.</p>
+              <p class="dato">Capacidad: 1 persona</p>
+            </div>
+          </li>
+          <li class="espacio">
+            <img src="img/espacio-grupal.svg" alt="Mesa redonda con seis sillas frente a un tablero blanco" width="480" height="300" loading="lazy">
+            <div class="espacio-texto">
+              <h3>Sala grupal</h3>
+              <p>Mesa de trabajo con tablero para hacer bocetos y planear proyectos. Ideal para tutorías y trabajos en equipo.</p>
+              <p class="dato">Capacidad: hasta 8 personas</p>
+            </div>
+          </li>
+          <li class="espacio">
+            <img src="img/espacio-computo.svg" alt="Fila de escritorios con monitores encendidos" width="480" height="300" loading="lazy">
+            <div class="espacio-texto">
+              <h3>Sala de cómputo</h3>
+              <p>Veinte equipos con programas de diseño, programación y análisis de datos ya instalados.</p>
+              <p class="dato">Capacidad: hasta 20 puestos</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Formulario de reserva o préstamo -->
+    <section id="reservas" class="seccion" aria-labelledby="titulo-reservas">
+      <div class="contenedor reservas-grid">
+        <header class="encabezado-seccion">
+          <h2 id="titulo-reservas">Reservas y préstamos</h2>
+          <p>Elige qué necesitas y completa la solicitud. Te confirmaremos por correo institucional en menos de un día hábil.</p>
+        </header>
+
+        <form class="formulario" id="form-reserva" novalidate>
+
+          <fieldset class="grupo-radios ancho-completo">
+            <legend>¿Qué necesitas?</legend>
+            <label class="opcion">
+              <input type="radio" name="tipo" value="sala" checked>
+              Reservar un espacio de estudio
+            </label>
+            <label class="opcion">
+              <input type="radio" name="tipo" value="prestamo">
+              Pedir un libro en préstamo
+            </label>
+          </fieldset>
+
+          <div class="campo">
+            <label for="nombre">Nombre completo</label>
+            <input type="text" id="nombre" name="nombre" autocomplete="name" required aria-describedby="error-nombre">
+            <p class="error" id="error-nombre" hidden></p>
+          </div>
+
+          <div class="campo">
+            <label for="correo">Correo institucional</label>
+            <input type="email" id="correo" name="correo" autocomplete="email" required aria-describedby="error-correo">
+            <p class="error" id="error-correo" hidden></p>
+          </div>
+
+          <div class="campo" data-solo="sala">
+            <label for="espacio">Espacio</label>
+            <select id="espacio" name="espacio" required aria-describedby="error-espacio">
+              <option value="">Elige un espacio</option>
+              <option value="individual" data-capacidad="1">Sala individual</option>
+              <option value="grupal" data-capacidad="8">Sala grupal</option>
+              <option value="computo" data-capacidad="20">Sala de cómputo</option>
+            </select>
+            <p class="error" id="error-espacio" hidden></p>
+          </div>
+
+          <div class="campo" data-solo="sala">
+            <label for="personas">Número de personas</label>
+            <input type="number" id="personas" name="personas" min="1" max="20" inputmode="numeric" required aria-describedby="error-personas">
+            <p class="error" id="error-personas" hidden></p>
+          </div>
+
+          <div class="campo" data-solo="prestamo">
+            <label for="libro">Libro</label>
+            <select id="libro" name="libro" required aria-describedby="error-libro">
+              <option value="">Elige un libro</option>
+              <option value="Introducción a la programación web">Introducción a la programación web</option>
+              <option value="Estadística básica">Estadística básica</option>
+              <option value="Don Quijote de la Mancha">Don Quijote de la Mancha</option>
+              <option value="Historia universal">Historia universal</option>
+            </select>
+            <p class="error" id="error-libro" hidden></p>
+          </div>
+
+          <div class="campo">
+            <label for="fecha">Fecha de uso o de recogida</label>
+            <input type="date" id="fecha" name="fecha" required aria-describedby="error-fecha">
+            <p class="error" id="error-fecha" hidden></p>
+          </div>
+
+          <div class="campo" data-solo="sala">
+            <label for="hora">Hora de inicio</label>
+            <input type="time" id="hora" name="hora" step="1800" required aria-describedby="error-hora">
+            <p class="error" id="error-hora" hidden></p>
+          </div>
+
+          <button type="submit" class="boton boton-primario ancho-completo boton-enviar">Enviar solicitud</button>
+
+          <p class="mensaje ancho-completo" id="mensaje-form" tabindex="-1" role="status"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- Horarios -->
+    <section id="horarios" class="seccion seccion-fondo" aria-labelledby="titulo-horarios">
+      <div class="contenedor">
+        <header class="encabezado-seccion">
+          <h2 id="titulo-horarios">Horarios de atención</h2>
+          <p>El horario puede cambiar en festivos y periodos de cierre. Revisa el correo institucional si tienes dudas.</p>
+        </header>
+
+        <div class="horarios-caja">
+          <table class="tabla-horarios" id="tabla-horarios">
+            <caption class="sr-only">Horario de atención por día de la semana</caption>
+            <thead>
+              <tr>
+                <th scope="col">Día</th>
+                <th scope="col">Horario</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-dias="1,2,3,4,5">
+                <th scope="row">Lunes a viernes</th>
+                <td>7:00&nbsp;a.&nbsp;m. a 8:00&nbsp;p.&nbsp;m.</td>
+              </tr>
+              <tr data-dias="6">
+                <th scope="row">Sábado</th>
+                <td>8:00&nbsp;a.&nbsp;m. a 2:00&nbsp;p.&nbsp;m.</td>
+              </tr>
+              <tr data-dias="0">
+                <th scope="row">Domingo y festivos</th>
+                <td>Cerrado</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Preguntas frecuentes: funciona sin JavaScript gracias a details y summary -->
+    <section id="preguntas" class="seccion" aria-labelledby="titulo-preguntas">
+      <div class="contenedor">
+        <header class="encabezado-seccion">
+          <h2 id="titulo-preguntas">Preguntas frecuentes</h2>
+        </header>
+
+        <div class="faq">
+          <details>
+            <summary>¿Necesito una cuenta para reservar?</summary>
+            <p>Solo necesitas tu correo institucional. Lo usamos para confirmar la reserva y avisarte si hay cambios.</p>
+          </details>
+          <details>
+            <summary>¿Cuántos libros puedo pedir a la vez?</summary>
+            <p>Puedes tener hasta tres préstamos activos. Cada uno dura quince días calendario y se puede renovar una vez si nadie más lo ha reservado.</p>
+          </details>
+          <details>
+            <summary>¿Cómo cancelo una reserva?</summary>
+            <p>Responde al correo de confirmación con al menos dos horas de anticipación. Así liberas el espacio para otra persona.</p>
+          </details>
+          <details>
+            <summary>¿Dónde recojo los libros?</summary>
+            <p>En el mostrador de préstamos, en el bloque B, piso 2. Lleva tu documento de identidad o tu carné institucional.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor pie-grid">
+      <div>
+        <p class="marca-pie">BiblioAbierta</p>
+        <p>Biblioteca virtual de ejemplo, creada como proyecto académico para practicar HTML5, CSS3 y diseño responsivo.</p>
+      </div>
+      <div>
+        <h2>Contacto</h2>
+        <ul>
+          <li>Correo: biblioteca@ejemplo.edu</li>
+          <li>Extensión: 1200</li>
+          <li>Bloque B, piso 2, campus principal</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Ir a</h2>
+        <ul>
+          <li><a href="#catalogo">Catálogo</a></li>
+          <li><a href="#espacios">Espacios de estudio</a></li>
+          <li><a href="#reservas">Reservas y préstamos</a></li>
+          <li><a href="#horarios">Horarios</a></li>
+          <li><a href="#preguntas">Preguntas frecuentes</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="contenedor">
+      <p class="derechos">Datos de ejemplo. Imágenes originales del proyecto. Año: <span id="anio"></span>.</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
